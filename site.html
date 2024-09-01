@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmm110 compact site</title>
+    
+    <!-- Добавляем иконку через URL -->
+    <link rel="icon" href="https://i.postimg.cc/qRBKTTdb/a.png" type="image/png">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alumni+Sans+Pinstripe:ital@0;1&family=Amatic+SC:wght@400;700&family=Comforter+Brush&family=Great+Vibes&family=Stalinist+One&family=Stick&family=Tiny5&display=swap');
+
+        body {
+            user-select: none; /* Отключает выделение текста */
+            font-family: "Stalinist One", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #e0e0e0;
+            position: relative;
+            background-image: url('https://habrastorage.org/files/9ec/4ea/93a/9ec4ea93ab9a440e8a293a87df6dc303.gif');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Наложение (overlay) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+
+        .no-interaction {
+            pointer-events: none;
+        }
+
+        h1 {
+            text-align: center;
+            color: #a4f9c8;
+            font-size: 30px;
+            margin: 0;
+            z-index: 1;
+        }
+
+        h2 {
+            text-align: center;
+            color: #a4f9c8;
+            font-size: 20px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .project-card {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 255, 0, 0.2);
+            max-width: 700px;
+            margin: 15px auto;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 255, 0, 0.3);
+        }
+
+        .project-card.expanded {
+            transform: scale(1.1);
+            box-shadow: 0 12px 24px rgba(0, 255, 0, 0.4);
+            position: relative;
+            z-index: 2;
+            max-height: calc(100vh - 100px);
+        }
+
+        .project-card.expanded ~ .project-card {
+            transform: translateY(10px);
+        }
+
+        p {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #a4f9c8;
+        }
+
+        a {
+            color: #32ff7e;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #00ff00;
+        }
+
+        .fixed-text {
+            position: fixed;
+            bottom: 50px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border: 1px solid #32ff7e;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            font-size: 12px;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .fixed-text:hover {
+            color: #00ff00;
+            background-color: rgba(0, 0, 0, 0.911);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #32ff7e;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            box-shadow: 0 -1px 10px rgba(0, 255, 0, 0.2);
+            z-index: 9999;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .content {
+            z-index: 1;
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .content.show {
+            opacity: 1;
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            z-index: 2;
+            position: fixed; /* Используем fixed для лучшего позиционирования */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9); /* Фон для лучшей видимости текста */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 255, 0, 0.5);
+            width: 80%;
+            max-width: 1000px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease; /* Анимация появления и скрытия */
+        }
+
+        .info-section.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .info-section.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="content show">
+        <h1>Добро пожаловать в софт-портал <span translate="no"> mmm110</span></h1>
+
+        <div class="project-card" onclick="toggleExpand(this)">
+            <h2>Проект <span translate="no"> 'MSC'</span></h2>
+            <p>
+                В рамках проекта <span translate="no"> 'MSC' </span> разрабатывается программное обеспечение под маркировкой <span translate="no"> 'MSC'.</span> <br><br>
+                <a href="https://drive.google.com/drive/folders/17tDy7HIWH57jWQKUcbjA4b250wD-jxKg?usp=sharing">Image editor</a> - Программа для просмотра изображений и редактирования некоторых настроек, таких как ширина, высота, качество изображения. <br><br>
+                <a href="https://drive.google.com/drive/folders/1glbr4UN4c12kB_-_Tc1RoLPyWOdMxXIy?usp=sharing">MSC CHATS</a> - Терминальная программа для чтения и отправки сообщений через бота <span translate="no"> Telegram. MSC CHATS </span>обладает множеством настроек и функций для удобной работы пользователя.
+            </p>
+        </div>
+        <br>
+        <div class="project-card" onclick="toggleExpand(this)">
+            <h2>Проект <span translate="no"> 'mmm110: apps'</span></h2>
+            <p>
+                <a href="https://drive.google.com/file/d/1lXp5eczjX7JMU8MPnPU6rxvPM-GaPJi_/view?usp=sharing">F</a> - Программа-блокировщик для ms-dos, написанная на Паскале. При запуске системы требует ввести код, если через 10 попыток ввести так и не удалось, то система требует перезагрузки или выключения. Чтобы всё работало, нужно иметь reboot.com на пути C:\ и прописать в autoexec путь до программы, а также в txt по пути C:\ создать txt с именем CODE.TXT, там же прописать код из цифр.
+            </p>
+        </div>
+        <br>
+        <div class="project-card" onclick="toggleExpand(this)">
+            <h2>Проект <span translate="no"> 'mmm110: free code'</span></h2>
+            <p>
+                Весь свободный код содержится в этом проекте <br><br>
+                <a href="https://drive.google.com/file/d/1kSBkrz_7oozI89_tlQFBt2d-5WNG88N9/view?usp=sharing">load</a> - Блок кода на Python, который может читать и записывать данные в файлы. Это может пригодиться, когда нужно хранить постоянные переменные (например, ввод пользователя). <br><br>
+                <a href="https://drive.google.com/file/d/10RLXavOh6RHgtuyLwGr9mq6BO2TlA_sd/view?usp=sharing">conf</a> - Блок кода на Python, который может запрашивать подтверждение от пользователя (например, Y/N или написать слово подтверждения (например prqwe)).
+            </p>
+        </div>
+        <br>
+        <div class="project-card" onclick="toggleExpand(this)">
+            <h2>Обновление сайта</h2>
+            <p>
+                Сайт представляет собой локальный хаб всех файлов. Так как файлы добавляются и изменяются, нужно обновлять и сам хаб. По этой <a href="https://github.com/mmm110z/mmm110_site">ссылке</a> вы можете скачать актуальную версию сайта. <br> <br> Приятного пользования! ＼(＾▽＾)／
+            </p>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h2>
+            По вопросам обращайтесь в мой <span translate="no"> Telegram </span> - @mmm110_iphone
+        </h2>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+
+    <div class="info-section">
+        <h2>
+            Этот сайт и контент предоставляет mmm110, если вы оскорблены с элемента сайта или контента - у вас не оригинальный сайт. <br> <br>Запрещено копировать элементы сайта и выдавать за свои или изменять их с целью оскорбить, унизить или незаконных действий. <br> <br>По остальным вопросам можете писать в мой Telegram @mmm110_iphone
+        </h2>
+    </div>
+
+    <div class="fixed-text" onclick="toggleInfoSection()"> <span translate="no">mmm110 soft-portal: V 1.0</span><br>Дата выпуска: 31.08.2024</div>
+
+    <div class="footer">
+        &copy; 2024 <span translate="no">mmm110</span>. Все права защищены.
+    </div>
+
+    <script>
+        function toggleExpand(element) {
+            if (document.querySelector('.info-section').classList.contains('show')) {
+                return; // Если инфо-секция открыта, ничего не делаем
+            }
+
+            const isExpanded = element.classList.contains('expanded');
+            
+            // Убираем расширение у всех блоков
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.classList.remove('expanded');
+            });
+
+            if (!isExpanded) {
+                // Если блок не был увеличен, увеличиваем его
+                element.classList.add('expanded');
+
+                // Прокручиваем страницу до выбранного блока
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function toggleInfoSection() {
+            const infoSection = document.querySelector('.info-section');
+            const contentSection = document.querySelector('.content');
+            const body = document.querySelector('body');
+
+            if (infoSection.classList.contains('show')) {
+                // Если блок открыт, запускаем анимацию скрытия
+                infoSection.classList.remove('show');
+                infoSection.classList.add('hide');
+                
+                // Блокируем взаимодействие с контентом
+                body.classList.add('no-interaction');
+                
+                // После завершения анимации, скрываем контент
+                setTimeout(() => {
+                    infoSection.classList.remove('hide');
+                    contentSection.classList.add('show');
+                    body.classList.remove('no-interaction');
+                }, 500); // Время должно совпадать с продолжительностью анимации
+            } else {
+                // Если блок закрыт, запускаем анимацию открытия
+                contentSection.classList.remove('show');
+                infoSection.classList.remove('hide');
+                infoSection.classList.add('show');
+            }
+        }
+
+        function hideInfoSection() {
+            const infoSection = document.querySelector('.info-section');
+            const contentSection = document.querySelector('.content');
+            const body = document.querySelector('body');
+
+            // Запускаем анимацию скрытия секции информации
+            infoSection.classList.remove('show');
+            infoSection.classList.add('hide');
+
+            // Блокируем взаимодействие с контентом
+            body.classList.add('no-interaction');
+
+            // После завершения анимации, показываем основной контент
+            setTimeout(() => {
+                infoSection.classList.remove('hide');
+                contentSection.classList.add('show');
+                body.classList.remove('no-interaction');
+            }, 500); // Время должно совпадать с продолжительностью анимации
+        }
+
+        // Обработчик кликов по документу
+        document.addEventListener('click', function(event) {
+            // Если клик не по блоку и не по кнопке "Назад", свернуть все блоки и скрыть инфо-секцию
+            if (!event.target.closest('.project-card') && !event.target.closest('.fixed-text') && !event.target.closest('.back-button')) {
+                document.querySelectorAll('.project-card').forEach(card => {
+                    card.classList.remove('expanded');
+                });
+                hideInfoSection(); // Скрываем инфо-секцию
+            }
+
+        // Отключаем события копирования
+        document.addEventListener('copy', function(event) {
+            event.preventDefault();
+        });
+
+        // Отключаем выделение текста
+        document.addEventListener('mousedown', function(event) {
+            event.preventDefault();
+        });
+        });
+
+    </script>
+</body>
+</html>
